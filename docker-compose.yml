@@ -1,0 +1,45 @@
+services:
+    app:
+        container_name: betalent_app
+        build:
+            context: .
+            dockerfile: Dockerfile
+        ports:
+            - "81:8000"
+        command: php artisan serve --host=0.0.0.0
+        volumes:
+            - .:/var/www/html
+        environment:
+            - DB_HOST=db
+            - DB_PORT=3306
+            - DB_DATABASE=betalent
+            - DB_USERNAME=root
+            - DB_PASSWORD=root
+        depends_on:
+            - db
+        networks:
+            - betalent_system
+        extra_hosts:
+            - "host.docker.internal:host-gateway"
+
+    db:
+        container_name: betalent_db
+        image: mysql:5.7
+        environment:
+            - MYSQL_DATABASE=betalent
+            - MYSQL_USER=admin
+            - MYSQL_PASSWORD=admin
+            - MYSQL_ROOT_PASSWORD=root
+        ports:
+            - "3333:3306"
+        volumes:
+            - db-data:/var/lib/mysql
+        networks:
+            - betalent_system
+networks:
+  betalent_system:
+        driver: bridge
+volumes:
+    db-data:
+        driver: local
+
