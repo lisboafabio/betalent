@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Product;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Product;
 
 class ProductControllerTest extends TestCase
 {
@@ -22,12 +22,12 @@ class ProductControllerTest extends TestCase
         $response = $this->actingAs($this->admin, 'api')
             ->postJson('/api/products', [
                 'name' => 'Test Product',
-                'amount' => 1500
+                'amount' => 1500,
             ]);
 
         $response->assertStatus(201)
-                 ->assertJsonPath('name', 'Test Product')
-                 ->assertJsonPath('amount', 1500);
+            ->assertJsonPath('name', 'Test Product')
+            ->assertJsonPath('amount', 1500);
 
         $this->assertDatabaseHas('products', ['name' => 'Test Product']);
     }
@@ -49,6 +49,6 @@ class ProductControllerTest extends TestCase
             ->postJson('/api/products', []);
 
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['name', 'amount']);
+            ->assertJsonValidationErrors(['name', 'amount']);
     }
 }

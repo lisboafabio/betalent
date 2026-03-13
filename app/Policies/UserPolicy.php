@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Domain\User\Enums\UserRoleEnum;
 use App\Models\User;
-use Illuminate\Auth\Access\Response;
 
 class UserPolicy
 {

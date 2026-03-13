@@ -11,14 +11,14 @@ class RoleMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  Closure(Request): (Response)  $next
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response
     {
         $userRole = $request->user()?->role;
         $userRoleStr = $userRole instanceof \BackedEnum ? $userRole->value : $userRole;
 
-        if (!$userRoleStr || !in_array($userRoleStr, $roles)) {
+        if (! $userRoleStr || ! in_array($userRoleStr, $roles)) {
             return response()->json(['message' => 'Unauthorized. Insufficient privileges.'], 403);
         }
 

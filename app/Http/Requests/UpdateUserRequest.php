@@ -18,6 +18,7 @@ class UpdateUserRequest extends FormRequest
         if (is_string($targetUser)) {
             $targetUser = User::findOrFail($targetUser);
         }
+
         return $this->user()->can('update', $targetUser);
     }
 

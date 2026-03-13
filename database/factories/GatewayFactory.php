@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Gateway;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Gateway>
+ * @extends Factory<Gateway>
  */
 class GatewayFactory extends Factory
 {
@@ -17,7 +18,7 @@ class GatewayFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => 'Gateway ' . $this->faker->unique()->numberBetween(1, 100),
+            'name' => 'Gateway '.$this->faker->unique()->numberBetween(1, 100),
             'is_active' => true,
             'priority' => $this->faker->numberBetween(1, 10),
         ];

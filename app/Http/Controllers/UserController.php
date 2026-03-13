@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreUserRequest;
+use App\Http\Requests\UpdateUserRequest;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -22,7 +25,7 @@ class UserController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(\App\Http\Requests\StoreUserRequest $request)
+    public function store(StoreUserRequest $request)
     {
         $validated = $request->validated();
 
@@ -48,13 +51,13 @@ class UserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(\App\Http\Requests\UpdateUserRequest $request, string $id)
+    public function update(UpdateUserRequest $request, string $id)
     {
         $user = User::findOrFail($id);
         $validated = $request->validated();
 
         if (array_key_exists('password', $validated)) {
-            $validated['password'] = \Illuminate\Support\Facades\Hash::make($validated['password']);
+            $validated['password'] = Hash::make($validated['password']);
         }
 
         $user->update($validated);

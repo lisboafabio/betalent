@@ -3,10 +3,10 @@
 namespace Tests\Feature;
 
 use App\Domain\User\Enums\UserRoleEnum;
+use App\Models\Gateway;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Gateway;
 
 class GatewayControllerTest extends TestCase
 {

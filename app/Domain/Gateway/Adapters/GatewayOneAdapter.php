@@ -4,9 +4,9 @@ namespace App\Domain\Gateway\Adapters;
 
 use App\Domain\Gateway\Contracts\PaymentGatewayInterface;
 use App\Domain\Gateway\Dto\GatewayDto;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
 use Exception;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class GatewayOneAdapter implements PaymentGatewayInterface
 {
@@ -20,11 +20,11 @@ class GatewayOneAdapter implements PaymentGatewayInterface
                 'name' => $dto->name,
                 'email' => $dto->email,
                 'cardNumber' => $dto->card_number,
-                'cvv' => $dto->cvv
+                'cvv' => $dto->cvv,
             ]);
 
         if ($response->failed()) {
-            throw new Exception("Gateway 1 charge failed: " . $response->body());
+            throw new Exception('Gateway 1 charge failed: '.$response->body());
         }
 
         return $response->json();
@@ -36,7 +36,7 @@ class GatewayOneAdapter implements PaymentGatewayInterface
             ->post("{$this->baseUrl}/transactions/{$transactionId}/charge_back");
 
         if ($response->failed()) {
-            throw new Exception("Gateway 1 refund failed: " . $response->body());
+            throw new Exception('Gateway 1 refund failed: '.$response->body());
         }
 
         return $response->json();
@@ -55,11 +55,11 @@ class GatewayOneAdapter implements PaymentGatewayInterface
         return Cache::remember('gateway_one_token', 3600, function () {
             $response = Http::post("{$this->baseUrl}/login", [
                 'email' => 'dev@betalent.tech',
-                'token' => 'FEC9BB078BF338F464F96B48089EB498'
+                'token' => 'FEC9BB078BF338F464F96B48089EB498',
             ]);
 
             if ($response->failed()) {
-                throw new Exception("Gateway 1 Login failed");
+                throw new Exception('Gateway 1 Login failed');
             }
 
             return $response->json('token');

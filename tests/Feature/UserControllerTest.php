@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Domain\User\Enums\UserRoleEnum;
 use App\Models\User;
-
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -20,7 +19,7 @@ class UserControllerTest extends TestCase
         $this->manager = User::factory()->create(['role' => UserRoleEnum::MANAGER->value]);
         $this->finance = User::factory()->create(['role' => UserRoleEnum::FINANCE->value]);
         $this->user = User::factory()->create(['role' => UserRoleEnum::USER->value]);
-        $this->baseRouteUrlPath = "/api/users";
+        $this->baseRouteUrlPath = '/api/users';
     }
 
     public function test_admin_can_list_users()
@@ -103,7 +102,7 @@ class UserControllerTest extends TestCase
             ->assertJsonValidationErrors(['role']);
 
         $payload2 = [
-            'name' => 'Updated Name 2'
+            'name' => 'Updated Name 2',
         ];
         $response2 = $this->actingAs($this->user, 'api')->putJson("$this->baseRouteUrlPath/{$this->user->id}", $payload2);
         $response2->assertStatus(200);

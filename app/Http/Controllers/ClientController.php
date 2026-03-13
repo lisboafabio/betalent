@@ -14,6 +14,7 @@ class ClientController extends Controller
     public function show(Client $client)
     {
         $client->load('transactions');
+
         return response()->json($client);
     }
 }

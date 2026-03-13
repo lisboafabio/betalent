@@ -2,10 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\Client;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
-use App\Models\User;
-use App\Models\Client;
 
 class ClientControllerTest extends TestCase
 {
@@ -25,7 +25,7 @@ class ClientControllerTest extends TestCase
             ->getJson('/api/clients');
 
         $response->assertStatus(200)
-                 ->assertJsonCount(2, 'data');
+            ->assertJsonCount(2, 'data');
     }
 
     public function test_admin_can_view_client_details()
@@ -36,6 +36,6 @@ class ClientControllerTest extends TestCase
             ->getJson("/api/clients/{$client->id}");
 
         $response->assertStatus(200)
-                 ->assertJsonPath('name', 'Tester');
+            ->assertJsonPath('name', 'Tester');
     }
 }

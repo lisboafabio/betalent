@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Domain\Gateway\Dto\GatewayDto;
-use App\Models\Transaction;
-use App\Models\Product;
-use App\Models\Client;
-use App\Models\Gateway;
-use App\Http\Requests\StoreTransactionRequest;
 use App\Domain\Gateway\Services\PaymentGatewayManager;
+use App\Http\Requests\StoreTransactionRequest;
+use App\Models\Client;
+use App\Models\Product;
+use App\Models\Transaction;
 
 class TransactionController extends Controller
 {

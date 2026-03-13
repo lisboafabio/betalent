@@ -5,11 +5,11 @@ namespace Tests\Feature;
 use App\Domain\Gateway\Adapters\GatewayOneAdapter;
 use App\Domain\Gateway\Adapters\GatewayTwoAdapter;
 use App\Domain\Gateway\Dto\GatewayDto;
+use App\Domain\Gateway\Services\PaymentGatewayManager;
+use App\Models\Gateway;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
-use App\Models\Gateway;
-use App\Domain\Gateway\Services\PaymentGatewayManager;
 
 class GatewayIntegrationTest extends TestCase
 {
@@ -45,7 +45,7 @@ class GatewayIntegrationTest extends TestCase
             'name' => 'Tester',
             'email' => 'test@test.com',
             'card_number' => '5569000000006063',
-            'cvv' => '010'
+            'cvv' => '010',
         ];
 
         $adapter = app(GatewayOneAdapter::class);
@@ -78,7 +78,7 @@ class GatewayIntegrationTest extends TestCase
             'name' => 'Tester',
             'email' => 'test@test.com',
             'card_number' => '5569000000006063',
-            'cvv' => '010'
+            'cvv' => '010',
         ];
 
         $adapter = app(GatewayTwoAdapter::class);

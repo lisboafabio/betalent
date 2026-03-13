@@ -2,13 +2,13 @@
 
 namespace Tests\Feature;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
-use Tests\TestCase;
-use App\Models\User;
 use App\Models\Gateway;
 use App\Models\Product;
 use App\Models\Transaction;
+use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Http;
+use Tests\TestCase;
 
 class TransactionControllerTest extends TestCase
 {
@@ -36,23 +36,23 @@ class TransactionControllerTest extends TestCase
             'name' => 'John Doe',
             'email' => 'john@test.com',
             'cardNumber' => '5569000000006063',
-            'cvv' => '010'
+            'cvv' => '010',
         ]);
 
         $response->assertStatus(201)
-                 ->assertJsonPath('amount', 2000)
-                 ->assertJsonPath('status', 'paid');
+            ->assertJsonPath('amount', 2000)
+            ->assertJsonPath('status', 'paid');
 
         $this->assertDatabaseHas('transactions', [
             'amount' => 2000,
             'status' => 'paid',
             'external_id' => 'gate-123',
-            'gateway_id' => $gateway->id
+            'gateway_id' => $gateway->id,
         ]);
 
         $this->assertDatabaseHas('clients', [
             'name' => 'John Doe',
-            'email' => 'john@test.com'
+            'email' => 'john@test.com',
         ]);
     }
 
@@ -62,7 +62,7 @@ class TransactionControllerTest extends TestCase
 
         $transaction = Transaction::factory()->create([
             'gateway_id' => $gateway->id,
-            'external_id' => 'trans-456'
+            'external_id' => 'trans-456',
         ]);
 
         Http::fake([
@@ -73,11 +73,11 @@ class TransactionControllerTest extends TestCase
             ->postJson("/api/transactions/{$transaction->id}/refund");
 
         $response->assertStatus(200)
-                 ->assertJsonPath('message', 'Refund successful');
+            ->assertJsonPath('message', 'Refund successful');
 
         $this->assertDatabaseHas('transactions', [
             'id' => $transaction->id,
-            'status' => 'refunded'
+            'status' => 'refunded',
         ]);
     }
 
@@ -85,7 +85,7 @@ class TransactionControllerTest extends TestCase
     {
         $response = $this->postJson('/api/transactions', []);
         $response->assertStatus(422)
-                 ->assertJsonValidationErrors(['product_id', 'quantity', 'name', 'email', 'cardNumber', 'cvv']);
+            ->assertJsonValidationErrors(['product_id', 'quantity', 'name', 'email', 'cardNumber', 'cvv']);
     }
 
     public function test_admin_can_list_transactions_paginated()
@@ -95,6 +95,6 @@ class TransactionControllerTest extends TestCase
         $response = $this->actingAs($this->admin, 'api')->getJson('/api/transactions');
 
         $response->assertStatus(200)
-                 ->assertJsonCount(2, 'data');
+            ->assertJsonCount(2, 'data');
     }
 }
