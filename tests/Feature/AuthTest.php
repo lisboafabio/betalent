@@ -4,7 +4,6 @@ namespace Tests\Feature;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -71,7 +70,7 @@ class AuthTest extends TestCase
         $token = JWTAuth::fromUser($user);
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson("$this->authBaseUrl/me");
 
         $response->assertStatus(200)
@@ -94,7 +93,7 @@ class AuthTest extends TestCase
         $token = JWTAuth::fromUser($user);
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->postJson("$this->authBaseUrl/refresh");
 
         $response->assertStatus(200)
@@ -111,7 +110,7 @@ class AuthTest extends TestCase
         $token = JWTAuth::fromUser($user);
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->postJson("$this->authBaseUrl/logout");
 
         $response->assertStatus(200)
@@ -120,7 +119,7 @@ class AuthTest extends TestCase
             ]);
 
         $secondResponse = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $token,
+            'Authorization' => 'Bearer '.$token,
         ])->getJson("$this->authBaseUrl/me");
 
         $secondResponse->assertStatus(401);
