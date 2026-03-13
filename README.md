@@ -1,59 +1,282 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# BeTalent
+## Como Executar
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+1. Antes de iniciar o projeto voce precisa ter o [docker](https://docs.docker.com/get-started/get-docker) e [docker compose](https://docs.docker.com/compose/install) instalados. Caso já os possua, avance para o próximo passo.
+2. Para iniciar o projeto rode o comando abaixo:
+   ```bash
+    docker compose up -d && docker compose exec app php artisan db:seed
+   ```
+3. Para rodar os tests:
+   ```bash
+    docker compose exec app ./vendor/bin/phpunit tests
+   ```
 
-## About Laravel
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+---
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Endpoints
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+> Rotas marcadas com **[Auth]** exigem o header `Authorization: Bearer {token}`.  
+> Rotas marcadas com **[Admin/Manager]** exigem role `admin` ou `manager`.  
+> Rotas marcadas com **[Admin/Manager/Finance]** exigem role `admin`, `manager` ou `finance`.
 
-## Learning Laravel
+---
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+### Autenticação
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+#### POST /auth/login
+Input:
+```json
+{ "email": "user@example.com", "password": "secret123" }
+```
+Output:
+```json
+{ "access_token": "eyJ...", "token_type": "bearer", "expires_in": 3600 }
+```
+Status code: `200`
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+#### POST /auth/logout `[Auth]`
+Output:
+```json
+{ "message": "Successfully logged out" }
+```
+Status code: `200`
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+#### POST /auth/refresh `[Auth]`
+Output:
+```json
+{ "access_token": "eyJ...", "token_type": "bearer", "expires_in": 3600 }
+```
+Status code: `200`
 
-## Contributing
+---
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+#### GET /auth/me `[Auth]`
+Output:
+```json
+{ "id": 1, "name": "John Doe", "email": "user@example.com", "role": "admin" }
+```
+Status code: `200`
 
-## Code of Conduct
+---
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+### Usuários `[Auth]`
 
-## Security Vulnerabilities
+#### GET /users
+Output:
+```json
+{ "data": [{ "id": 1, "name": "John Doe", "email": "user@example.com", "role": "admin" }], "total": 1 }
+```
+Status code: `200`
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+---
 
-## License
+#### POST /users
+Input:
+```json
+{ "name": "John Doe", "email": "user@example.com", "password": "secret123", "role": "manager" }
+```
+Output:
+```json
+{ "id": 1, "name": "John Doe", "email": "user@example.com", "role": "manager" }
+```
+Status code: `201`
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+---
+
+#### GET /users/{id}
+Output:
+```json
+{ "id": 1, "name": "John Doe", "email": "user@example.com", "role": "admin" }
+```
+Status code: `200`
+
+---
+
+#### PUT /users/{id}
+Input (todos os campos são opcionais):
+```json
+{ "name": "Jane Doe", "email": "jane@example.com", "password": "newpass123", "role": "finance" }
+```
+Output:
+```json
+{ "id": 1, "name": "Jane Doe", "email": "jane@example.com", "role": "finance" }
+```
+Status code: `200`
+
+---
+
+#### DELETE /users/{id}
+Output: `null`  
+Status code: `204`
+
+---
+
+### Produtos `[Auth]` `[Admin/Manager]`
+
+#### GET /products
+Output:
+```json
+{ "data": [{ "id": 1, "name": "Product A", "amount": 5000 }], "total": 1 }
+```
+Status code: `200`
+
+---
+
+#### POST /products
+Input:
+```json
+{ "name": "Product A", "amount": 5000 }
+```
+Output:
+```json
+{ "id": 1, "name": "Product A", "amount": 5000 }
+```
+Status code: `201`
+
+---
+
+#### GET /products/{id}
+Output:
+```json
+{ "id": 1, "name": "Product A", "amount": 5000 }
+```
+Status code: `200`
+
+---
+
+#### PUT /products/{id}
+Input (todos os campos são opcionais):
+```json
+{ "name": "Product B", "amount": 7500 }
+```
+Output:
+```json
+{ "id": 1, "name": "Product B", "amount": 7500 }
+```
+Status code: `200`
+
+---
+
+#### DELETE /products/{id}
+Output: `null`  
+Status code: `204`
+
+---
+
+### Clientes `[Auth]` `[Admin/Manager/Finance]`
+
+#### GET /clients
+Output:
+```json
+{ "data": [{ "id": 1, "name": "Jane Doe", "email": "jane@example.com" }], "total": 1 }
+```
+Status code: `200`
+
+---
+
+#### GET /clients/{id}
+Output:
+```json
+{
+  "id": 1,
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "transactions": [{ "id": 1, "amount": 10000, "status": "paid" }]
+}
+```
+Status code: `200`
+
+---
+
+### Transações
+
+#### POST /transactions (público)
+Input:
+```json
+{
+  "product_id": 1,
+  "quantity": 2,
+  "name": "Jane Doe",
+  "email": "jane@example.com",
+  "cardNumber": "1234567890123456",
+  "cvv": "123"
+}
+```
+Output:
+```json
+{
+  "id": 1,
+  "amount": 10000,
+  "status": "paid",
+  "card_last_numbers": "3456",
+  "client": { "id": 1, "name": "Jane Doe" },
+  "gateway": { "id": 1, "name": "Gateway1" },
+  "products": [{ "id": 1, "name": "Product A" }]
+}
+```
+Status code: `201`
+
+---
+
+#### GET /transactions `[Auth]` `[Admin/Manager/Finance]`
+Output:
+```json
+{ "data": [{ "id": 1, "amount": 10000, "status": "paid", "client": {}, "gateway": {} }], "total": 1 }
+```
+Status code: `200`
+
+---
+
+#### GET /transactions/{id} `[Auth]` `[Admin/Manager/Finance]`
+Output:
+```json
+{ "id": 1, "amount": 10000, "status": "paid", "client": {}, "gateway": {}, "products": [] }
+```
+Status code: `200`
+
+---
+
+#### POST /transactions/{id}/refund `[Auth]` `[Admin/Manager/Finance]`
+Output:
+```json
+{ "message": "Refund successful", "transaction": { "id": 1, "status": "refunded" } }
+```
+Status code: `200`
+
+---
+
+### Gateways `[Auth]` `[Admin/Manager]`
+
+#### POST /gateways/{id}/activate
+Output:
+```json
+{ "message": "Gateway activated", "gateway": { "id": 1, "is_active": true } }
+```
+Status code: `200`
+
+---
+
+#### POST /gateways/{id}/deactivate
+Output:
+```json
+{ "message": "Gateway deactivated", "gateway": { "id": 1, "is_active": false } }
+```
+Status code: `200`
+
+---
+
+#### PUT /gateways/{id}/priority
+Input:
+```json
+{ "priority": 2 }
+```
+Output:
+```json
+{ "message": "Gateway priority updated", "gateway": { "id": 1, "priority": 2 } }
+```
+Status code: `200`
