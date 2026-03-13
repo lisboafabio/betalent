@@ -123,4 +123,8 @@ return [
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'gateways' => [
+        'gateway_one' => env('APP_GATEWAY_ONE', 'http://host.docker.internal:3001'),
+        'gateway_two' => env('APP_GATEWAYS_TWO', 'http://host.docker.internal:3002'),
+    ],
 ];

@@ -51,4 +51,30 @@ class ProductControllerTest extends TestCase
         $response->assertStatus(422)
             ->assertJsonValidationErrors(['name', 'amount']);
     }
+    public function test_cannot_view_non_existent_product()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->getJson('/api/products/999');
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'Product not found');
+    }
+
+    public function test_cannot_update_non_existent_product()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->putJson('/api/products/999', ['name' => 'Updated']);
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'Product not found');
+    }
+
+    public function test_cannot_delete_non_existent_product()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->deleteJson('/api/products/999');
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'Product not found');
+    }
 }

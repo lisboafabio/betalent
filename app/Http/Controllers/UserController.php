@@ -39,7 +39,11 @@ class UserController extends Controller
      */
     public function show(Request $request, string $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
 
         if ($request->user()->cannot('view', $user)) {
             abort(403);
@@ -53,7 +57,12 @@ class UserController extends Controller
      */
     public function update(UpdateUserRequest $request, string $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+
         $validated = $request->validated();
 
         if (array_key_exists('password', $validated)) {
@@ -70,7 +79,11 @@ class UserController extends Controller
      */
     public function destroy(Request $request, string $id)
     {
-        $user = User::findOrFail($id);
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
 
         if ($request->user()->cannot('delete', $user)) {
             abort(403);

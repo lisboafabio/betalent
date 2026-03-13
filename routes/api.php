@@ -21,22 +21,30 @@ Route::group([
 Route::post('transactions', [TransactionController::class, 'store']);
 
 Route::middleware(['auth:api', 'role:admin,manager'])->group(function () {
-    Route::post('gateways/{gateway}/activate', [GatewayController::class, 'activate']);
-    Route::post('gateways/{gateway}/deactivate', [GatewayController::class, 'deactivate']);
-    Route::put('gateways/{gateway}/priority', [GatewayController::class, 'changePriority']);
+    Route::post('gateways/{id}/activate', [GatewayController::class, 'activate']);
+    Route::post('gateways/{id}/deactivate', [GatewayController::class, 'deactivate']);
+    Route::put('gateways/{id}/priority', [GatewayController::class, 'changePriority']);
 
-    Route::apiResource('products', ProductController::class);
+    Route::get('products', [ProductController::class, 'index']);
+    Route::post('products', [ProductController::class, 'store']);
+    Route::get('products/{id}', [ProductController::class, 'show']);
+    Route::put('products/{id}', [ProductController::class, 'update']);
+    Route::delete('products/{id}', [ProductController::class, 'destroy']);
 });
 
 Route::middleware(['auth:api', 'role:admin,manager,finance'])->group(function () {
     Route::get('clients', [ClientController::class, 'index']);
-    Route::get('clients/{client}', [ClientController::class, 'show']);
+    Route::get('clients/{id}', [ClientController::class, 'show']);
 
     Route::get('transactions', [TransactionController::class, 'index']);
-    Route::get('transactions/{transaction}', [TransactionController::class, 'show']);
-    Route::post('transactions/{transaction}/refund', [TransactionController::class, 'refund']);
+    Route::get('transactions/{id}', [TransactionController::class, 'show']);
+    Route::post('transactions/{id}/refund', [TransactionController::class, 'refund']);
 });
 
 Route::middleware(['auth:api'])->group(function () {
-    Route::apiResource('users', UserController::class);
+    Route::get('users', [UserController::class, 'index']);
+    Route::post('users', [UserController::class, 'store']);
+    Route::get('users/{id}', [UserController::class, 'show']);
+    Route::put('users/{id}', [UserController::class, 'update']);
+    Route::delete('users/{id}', [UserController::class, 'destroy']);
 });

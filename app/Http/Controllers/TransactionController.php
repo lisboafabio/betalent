@@ -14,7 +14,12 @@ class TransactionController extends Controller
     public function store(StoreTransactionRequest $request, PaymentGatewayManager $manager)
     {
         $validated = $request->validated();
-        $product = Product::findOrFail($validated['product_id']);
+        $product = Product::where('id', $validated['product_id'])->first();
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
         $totalAmount = $product->amount * $validated['quantity'];
 
         $clientData = [
@@ -61,13 +66,25 @@ class TransactionController extends Controller
         return response()->json(Transaction::with(['client', 'gateway'])->paginate());
     }
 
-    public function show(Transaction $transaction)
+    public function show(string $id)
     {
-        return response()->json($transaction->load(['client', 'gateway', 'products']));
+        $transaction = Transaction::where('id', $id)->first();
+
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
+        return response()->json($transaction?->load(['client', 'gateway', 'products']));
     }
 
-    public function refund(Transaction $transaction, PaymentGatewayManager $manager)
+    public function refund(string $id, PaymentGatewayManager $manager)
     {
+        $transaction = Transaction::where('id', $id)->first();
+
+        if (!$transaction) {
+            return response()->json(['message' => 'Transaction not found'], 404);
+        }
+
         if ($transaction->status === 'refunded') {
             return response()->json(['message' => 'Already refunded'], 422);
         }

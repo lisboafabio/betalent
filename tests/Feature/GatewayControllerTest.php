@@ -50,4 +50,21 @@ class GatewayControllerTest extends TestCase
 
         $response->assertStatus(403);
     }
+    public function test_cannot_activate_non_existent_gateway()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->postJson('/api/gateways/999/activate');
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'Gateway not found');
+    }
+
+    public function test_cannot_change_priority_of_non_existent_gateway()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->putJson('/api/gateways/999/priority', ['priority' => 1]);
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'Gateway not found');
+    }
 }

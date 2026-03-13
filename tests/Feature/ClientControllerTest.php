@@ -38,4 +38,12 @@ class ClientControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonPath('name', 'Tester');
     }
+    public function test_cannot_view_non_existent_client()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->getJson('/api/clients/999');
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'Client not found');
+    }
 }

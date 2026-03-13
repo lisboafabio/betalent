@@ -8,14 +8,15 @@
    ```
 3. Para rodar os tests:
    ```bash
-    docker compose exec app ./vendor/bin/phpunit tests
+    docker compose exec app env DB_DATABASE=:memory: php artisan test
    ```
-
+#### Após subir o projeto, você vai ter em [http://localhost:80/api](http://localhost:80/api) como url base
 
 ---
 
 ## Endpoints
 
+> Para uma melhor experiência, utilize a collection do Postman disponível em `./postman_collection.json`<br>
 > Rotas marcadas com **[Auth]** exigem o header `Authorization: Bearer {token}`.  
 > Rotas marcadas com **[Admin/Manager]** exigem role `admin` ou `manager`.  
 > Rotas marcadas com **[Admin/Manager/Finance]** exigem role `admin`, `manager` ou `finance`.
