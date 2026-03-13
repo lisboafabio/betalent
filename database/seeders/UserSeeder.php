@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Domain\User\Enums\UserRoleEnum;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 
@@ -17,6 +18,7 @@ class UserSeeder extends Seeder
             'name' => 'admin',
             'email' => $adminEmail,
             'password' => 'admin',
+            'role' => UserRoleEnum::ADMIN
         ]);
     }
 }

@@ -97,4 +97,21 @@ class TransactionControllerTest extends TestCase
         $response->assertStatus(200)
             ->assertJsonCount(2, 'data');
     }
+    public function test_cannot_view_non_existent_transaction()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->getJson('/api/transactions/999');
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'Transaction not found');
+    }
+
+    public function test_cannot_refund_non_existent_transaction()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->postJson('/api/transactions/999/refund');
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'Transaction not found');
+    }
 }

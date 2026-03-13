@@ -9,7 +9,13 @@ use Illuminate\Support\Facades\Http;
 
 class GatewayTwoAdapter implements PaymentGatewayInterface
 {
-    private string $baseUrl = 'http://localhost:3002';
+    private string $baseUrl;
+
+
+    public function __construct()
+    {
+        $this->baseUrl = config('app.gateways.gateway_two');
+    }
 
     private array $headers = [
         'Gateway-Auth-Token' => 'tk_f2198cc671b5289fa856',

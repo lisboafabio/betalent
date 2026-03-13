@@ -10,7 +10,12 @@ use Illuminate\Support\Facades\Http;
 
 class GatewayOneAdapter implements PaymentGatewayInterface
 {
-    private string $baseUrl = 'http://localhost:3001';
+    private string $baseUrl;
+
+    public function __construct()
+    {
+        $this->baseUrl = config('app.gateways.gateway_one');
+    }
 
     public function charge(GatewayDto $dto): array
     {

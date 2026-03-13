@@ -133,4 +133,30 @@ class UserControllerTest extends TestCase
         $response = $this->actingAs($this->manager, 'api')->deleteJson("$this->baseRouteUrlPath/{$this->admin->id}");
         $response->assertStatus(403);
     }
+    public function test_cannot_view_non_existent_user()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->getJson("$this->baseRouteUrlPath/999");
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'User not found');
+    }
+
+    public function test_cannot_update_non_existent_user()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->putJson("$this->baseRouteUrlPath/999", ['name' => 'Updated']);
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'User not found');
+    }
+
+    public function test_cannot_delete_non_existent_user()
+    {
+        $response = $this->actingAs($this->admin, 'api')
+            ->deleteJson("$this->baseRouteUrlPath/999");
+
+        $response->assertStatus(404)
+            ->assertJsonPath('message', 'User not found');
+    }
 }

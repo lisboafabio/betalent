@@ -11,9 +11,15 @@ class ClientController extends Controller
         return response()->json(Client::paginate());
     }
 
-    public function show(Client $client)
+    public function show(string $id)
     {
-        $client->load('transactions');
+        $client = Client::where('id', $id)->first();
+
+        if (!$client) {
+            return response()->json(['message' => 'Client not found'], 404);
+        }
+
+        $client?->load('transactions');
 
         return response()->json($client);
     }

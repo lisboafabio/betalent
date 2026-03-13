@@ -14,9 +14,11 @@ class UpdateUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        $targetUser = $this->route('user');
-        if (is_string($targetUser)) {
-            $targetUser = User::findOrFail($targetUser);
+        $targetUserId = $this->route('id');
+        $targetUser = User::where('id', $targetUserId)->first();
+
+        if (!$targetUser) {
+            return true; // Let the controller handle 404
         }
 
         return $this->user()->can('update', $targetUser);
@@ -24,14 +26,14 @@ class UpdateUserRequest extends FormRequest
 
     public function rules(): array
     {
-        $targetUser = $this->route('user');
-        if (is_string($targetUser)) {
-            $targetUser = User::findOrFail($targetUser);
-        }
+        $targetUserId = $this->route('id');
+        $targetUser = User::where('id', $targetUserId)->first();
+
+        $id = $targetUser ? $targetUser->id : null;
 
         return [
             'name' => ['sometimes', 'string', 'max:255'],
-            'email' => ['sometimes', 'string', 'email', 'max:255', Rule::unique('users')->ignore($targetUser->id)],
+            'email' => ['sometimes', 'string', 'email', 'max:255', Rule::unique('users')->ignore($id)],
             'password' => ['sometimes', 'string', 'min:8'],
             'role' => ['sometimes', 'string', Rule::enum(UserRoleEnum::class)],
         ];
@@ -42,9 +44,10 @@ class UpdateUserRequest extends FormRequest
         $validator->after(function ($validator) {
             $currentUser = $this->user();
             $requestedRole = $this->input('role');
-            $targetUser = $this->route('user');
+            $targetUserId = $this->route('id');
+            $targetUser = User::where('id', $targetUserId)->first();
 
-            if ($requestedRole) {
+            if ($targetUser && $requestedRole) {
                 if ($currentUser->role === UserRoleEnum::USER->value && $requestedRole !== $currentUser->role) {
                     $validator->errors()->add('role', 'Users cannot change their own role.');
                 }
