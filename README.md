@@ -4,7 +4,7 @@
 1. Antes de iniciar o projeto voce precisa ter o [docker](https://docs.docker.com/get-started/get-docker) e [docker compose](https://docs.docker.com/compose/install) instalados. Caso já os possua, avance para o próximo passo.
 2. Para iniciar o projeto rode o comando abaixo:
    ```bash
-    docker compose up -d && docker compose exec app php artisan db:seed
+    docker compose up -d && docker compose exec app php artisan migrate && docker compose exec app php artisan db:seed
    ```
 3. Para rodar os tests:
    ```bash
